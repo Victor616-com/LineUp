@@ -19,6 +19,7 @@ export default function Home() {
       navigate("/");
     } catch (err) {
       console.error(err);
+      
     }
   };
 
