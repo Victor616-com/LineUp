@@ -11,17 +11,6 @@ export default function Home() {
 
   const navigate = useNavigate();
 
-  // Sign out function
-  const handleSignOut = async (e) => {
-    e.preventDefault();
-    try {
-      await signOut();
-      navigate("/");
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   useEffect(() => {
     const loadProfile = async () => {
       if (!session) return;
@@ -38,12 +27,10 @@ export default function Home() {
 
   return (
     <PrivateRoute>
-      <main className="font-extrabold text-m">
+      <main className="font-extrabold text-m px-s">
         <h1>Home</h1>
         <h2>Welcome, {profile?.name} 🎉</h2>
-        <p onClick={handleSignOut} className="text-blue-600 cursor-pointer">
-          Sign out
-        </p>
+
         {session?.user && (
           <Link to={`/profile/${session.user.id}`} className="text-blue-500">
             My Profile

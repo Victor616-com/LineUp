@@ -51,7 +51,7 @@ const ProfileView = () => {
     return <p className="text-center text-white mt-10">Loading...</p>;
 
   return (
-    <div className="bg-bgColor">
+    <div className="">
       <div className="relative flex flex-col items-center justify-center gap-s mt-[10px] bg-profileColor1 py-m rounded-medium mx-[10px]">
         {/* Menu Button */}
         <img
