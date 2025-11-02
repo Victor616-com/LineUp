@@ -216,8 +216,9 @@ const EditProfileView = () => {
                   autoFocus
                   ref={(el) => {
                     if (el) {
-                      el.style.height = "auto";
+                      el.style.height = "16px";
                       el.style.height = el.scrollHeight + "px";
+                      el.selectionStart = el.selectionEnd = el.value.length;
                     }
                   }}
                   className="w-full bg-transparent outline-none text-m resize-none overflow-hidden"
@@ -250,7 +251,7 @@ const EditProfileView = () => {
 
               {editingField === "about_me" && (
                 <button
-                  className="text-m w-fit text-primary"
+                  className="text-m w-fit ml-auto text-primary"
                   onClick={() => {
                     updateProfileField("about_me", profile.about_me || "");
                     setEditingField(null);
