@@ -7,7 +7,7 @@ const SignUp = () => {
   //User info states
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");
+  const [name, setName] = useState("");
 
   const [error, setError] = useState();
   const [loading, setLoading] = useState("");
@@ -19,7 +19,7 @@ const SignUp = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const result = await signUpNewUser(email, password, username);
+      const result = await signUpNewUser(email, password, name);
       if (result.success) {
         navigate("/home");
       } else {
@@ -40,10 +40,10 @@ const SignUp = () => {
         <h2 className="text-2xl">Sign Up!</h2>
 
         <div className="flex flex-col gap-xs">
-          <label>Enter your username</label>
+          <label>Enter your name</label>
           <input
             className="border-black rounded border"
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => setName(e.target.value)}
           />
 
           <label htmlFor="email">Enter your email</label>
