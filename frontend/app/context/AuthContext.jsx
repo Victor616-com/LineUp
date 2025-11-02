@@ -6,7 +6,7 @@ export const AuthContextProvider = ({ children }) => {
   const [session, setSession] = useState(undefined);
 
   // Sign up
-  const signUpNewUser = async (email, password, username) => {
+  const signUpNewUser = async (email, password, name) => {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -14,12 +14,12 @@ export const AuthContextProvider = ({ children }) => {
 
     if (error) return { success: false, error };
 
-    // Insert username into profile table
+    // Insert name into profile table
     const user = data.user;
     if (user) {
       const { error: profileError } = await supabase
         .from("profiles")
-        .insert({ id: user.id, username });
+        .insert({ id: user.id, name });
 
       if (profileError) return { success: false, error: profileError };
     }

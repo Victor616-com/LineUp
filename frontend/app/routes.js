@@ -5,5 +5,7 @@ export default [
     index("routes/SignUp.jsx"),
     route("home", "routes/home.jsx"),
     route("signin", "routes/SignIn.jsx"),
+    route("profile/:id", "routes/ProfileView.jsx"),
+    route("profile/:id/edit", "routes/EditProfileView.jsx"),
   ]),
 ];
