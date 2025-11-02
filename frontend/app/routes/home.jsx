@@ -1,5 +1,5 @@
 "use client";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { UserAuth } from "../context/AuthContext";
 import PrivateRoute from "../components/PrivateRoute";
 import { useEffect, useState } from "react";
@@ -11,23 +11,12 @@ export default function Home() {
 
   const navigate = useNavigate();
 
-  // Sign out function
-  const handleSignOut = async (e) => {
-    e.preventDefault();
-    try {
-      await signOut();
-      navigate("/");
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   useEffect(() => {
     const loadProfile = async () => {
       if (!session) return;
       const { data } = await supabase
         .from("profiles")
-        .select("username")
+        .select("name")
         .eq("id", session.user.id)
         .single();
       setProfile(data);
@@ -38,12 +27,15 @@ export default function Home() {
 
   return (
     <PrivateRoute>
-      <main className="font-extrabold text-m">
+      <main className="font-extrabold text-m px-s">
         <h1>Home</h1>
-        <h2>Welcome, {profile?.username} 🎉</h2>
-        <p onClick={handleSignOut} className="text-blue-600 cursor-pointer">
-          Sign out
-        </p>
+        <h2>Welcome, {profile?.name} 🎉</h2>
+
+        {session?.user && (
+          <Link to={`/profile/${session.user.id}`} className="text-blue-500">
+            My Profile
+          </Link>
+        )}
       </main>
     </PrivateRoute>
   );

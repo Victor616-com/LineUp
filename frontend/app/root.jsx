@@ -10,6 +10,7 @@ import {
 // Styles imported here will be bundled into the app automatically
 import "./app.css";
 import { AuthContextProvider } from "./context/AuthContext";
+import TopBar from "./components/TopBar";
 
 // Add links to external stylesheets, fonts, etc. here
 // https://reactrouter.com/start/framework/route-module#links

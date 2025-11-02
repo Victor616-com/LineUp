@@ -26,17 +26,21 @@ html {
 
 @theme {
   /* Colors */
-  --color-textColor: #555555;
-  --color-bgColor: #ffffff;
+  --color-textColor: #464646;
+  --color-bgColor: #f7f6f6;
   --color-yellow: #ffcf70;
-
+  --color-profileColor1: #1e1e1e;
+  --color-white: #ffffff;
+  --color-lightGray: #898989;
+  --color-veryLightGray: #dbdbdb;
+  --color-searchBox: #f1f1f1;
   /* Gap */
   --gap-xxxs: 2px;
   --gap-xxs: 5px;
   --gap-xs: 10px;
   --gap-s: 15px;
-  --gap-s: 15px;
   --gap-m: 30px;
+  --gap-l: 36px;
   /* Padding */
   --padding-xxxs: 2px;
   --padding-xxs: 5px;
@@ -49,11 +53,48 @@ html {
 }
 
 @layer components {
+  .text-xs {
+    /* Font family */
+    font-family: "Helvetica Now Display", sans-serif;
+    /* Font size & weight */
+    font-size: 12px; /* 1rem = 16px */
+    font-weight: 400;
+    font-style: normal;
+    color: var(--color-textColor);
+    /* Line height & letter spacing */
+    line-height: normal;
+    letter-spacing: 0.5px;
+  }
+  .text-s {
+    /* Font family */
+    font-family: "Helvetica Now Display", sans-serif;
+    /* Font size & weight */
+    font-size: 14px; /* 1rem = 16px */
+    font-weight: 400;
+    font-style: normal;
+    color: var(--color-textColor);
+    /* Line height & letter spacing */
+    line-height: normal;
+    letter-spacing: 0.5px;
+  }
   .text-m {
     /* Font family */
     font-family: "Helvetica Now Display", sans-serif;
     /* Font size & weight */
     font-size: 16px; /* 1rem = 16px */
+    font-weight: 400;
+    font-style: normal;
+    color: var(--color-textColor);
+    /* Line height & letter spacing */
+    line-height: normal;
+    letter-spacing: 0.5px;
+  }
+
+  .text-l {
+    /* Font family */
+    font-family: "Helvetica Now Display", sans-serif;
+    /* Font size & weight */
+    font-size: 18px; /* 1rem = 16px */
     font-weight: 400;
     font-style: normal;
     color: var(--color-textColor);
