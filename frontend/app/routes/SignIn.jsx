@@ -28,10 +28,10 @@ const SignIn = () => {
     }
   };
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="h-dvh flex flex-col justify-center items-center px-4 py-6 overflow-auto">
       <form
         onSubmit={handleSignIn}
-        className="max-w-md m-auto p-24 border border-black rounded-lg flex flex-col gap-m"
+        className="max-w-md rounded-lg flex flex-col gap-m"
       >
         <h2 className="text-2xl">Sign In!</h2>
 
@@ -59,7 +59,7 @@ const SignIn = () => {
         </button>
         <p>
           Don't have have an account?{" "}
-          <Link className="text-blue-500" to="/">
+          <Link className="text-blue-500" to="/signup">
             Sign up
           </Link>
         </p>
