@@ -32,10 +32,10 @@ const SignUp = () => {
     }
   };
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="h-dvh flex items-center justify-center">
       <form
         onSubmit={handleSignup}
-        className="max-w-md m-auto p-24 border border-black rounded-lg flex flex-col gap-m"
+        className="max-w-md m-auto rounded-lg flex flex-col gap-m"
       >
         <h2 className="text-2xl">Sign Up!</h2>
 
@@ -69,7 +69,7 @@ const SignUp = () => {
         </button>
         <p>
           Already have an account?{" "}
-          <Link className="text-blue-500" to="/signin">
+          <Link className="text-blue-500" to="/">
             Sign in
           </Link>
         </p>
