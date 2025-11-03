@@ -137,9 +137,18 @@ const EditProfileView = () => {
                   autoFocus
                   className="w-full bg-transparent outline-none text-m"
                   value={profile.name || ""}
-                  onChange={(e) =>
-                    setProfile((prev) => ({ ...prev, name: e.target.value }))
-                  }
+                  onChange={(e) => {
+                    const value = e.target.value
+                      .split(" ")
+                      .map((word) =>
+                        word.length > 0
+                          ? word.charAt(0).toUpperCase() + word.slice(1)
+                          : "",
+                      )
+                      .join(" ");
+
+                    setProfile((prev) => ({ ...prev, name: value }));
+                  }}
                   onBlur={() => {
                     updateProfileField("name", profile.name || "");
                     setEditingField(null);
