@@ -3,7 +3,7 @@ import { Outlet } from "react-router";
 import TopBar from "../components/TopBar";
 
 export default function Layout() {
-  const hideTopBarOn = ["/", "/signup"];
+  const hideTopBarOn = ["/", "/signup", "/onboarding"];
   const shouldHideTopBar = hideTopBarOn.includes(location.pathname);
 
   return (

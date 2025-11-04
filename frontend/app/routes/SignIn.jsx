@@ -2,6 +2,9 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { UserAuth } from "../context/AuthContext";
+import InputField from "../components/InputField";
+import YellowBtn from "../components/YellowBtn";
+//import logo from "../../assets/images/small-logo.svg";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -28,37 +31,32 @@ const SignIn = () => {
     }
   };
   return (
-    <div className="h-dvh flex flex-col justify-center items-center px-4 py-6 overflow-auto">
+    <div className="h-dvh flex flex-col gap-[60px] justify-center items-center px-4 py-6 overflow-auto">
+      {/*<img src={logo} alt="LineUp-logo" />*/}
       <form
         onSubmit={handleSignIn}
-        className="max-w-md rounded-lg flex flex-col gap-m"
+        className="w-[260px] rounded-lg flex flex-col gap-m items-center"
       >
-        <h2 className="text-2xl">Sign In!</h2>
+        <h2 className="text-heading1">Log In</h2>
 
-        <div className="flex flex-col gap-xs">
-          <label htmlFor="email">Enter your email</label>
-          <input
-            className="border-black rounded border"
+        <div className="w-full flex flex-col gap-s">
+          <InputField
+            placeholder="Enter your email"
             type="email"
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={setEmail}
           />
-
-          <label htmlFor="password">Enter your password</label>
-          <input
-            className="border-black rounded border"
+          <InputField
+            placeholder="Enter your password"
             type="password"
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={setPassword}
           />
         </div>
-        <button
-          className="bg-yellow w-fit px-xs py-xxs rounded-medium cursor-pointer"
-          type="submit"
-          disabled={loading}
-        >
+        <YellowBtn type="submit" loading={loading} loadingText="Signing In...">
           Sign In
-        </button>
-        <p>
-          Don't have have an account?{" "}
+        </YellowBtn>
+
+        <p className="text-m">
+          Don't have an account?{" "}
           <Link className="text-blue-500" to="/signup">
             Sign up
           </Link>
