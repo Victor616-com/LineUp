@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import logo from "../../../assets/images/lineUpPro-logo.svg";
 import YellowBtn from "../YellowBtn";
+import { useNavigate } from "react-router";
 
 const CheckIcon = (
   <svg
@@ -21,13 +22,10 @@ const CheckIcon = (
 );
 
 function Onboarding5({ onContinue }) {
+  const navigate = useNavigate();
+
   const [selectedCard, setSelectedCard] = useState(null);
-  const lineUpProPerks = [
-    { id: "1", text: "Unlimited collabs" },
-    { id: "2", text: "Unlimited connections" },
-    { id: "3", text: "Advanced insights" },
-    { id: "4", text: "See detailed reviews" },
-  ];
+
   const cards = [
     {
       id: "Monthly",
@@ -40,6 +38,18 @@ function Onboarding5({ onContinue }) {
       pricePerMonth: "29",
     },
   ];
+
+  const lineUpProPerks = [
+    { id: "1", text: "Unlimited collabs" },
+    { id: "2", text: "Unlimited connections" },
+    { id: "3", text: "Advanced insights" },
+    { id: "4", text: "See detailed reviews" },
+  ];
+
+  const handleContinue = () => {
+    navigate("/home");
+  };
+
   return (
     <div className="w-[260px] flex flex-col items-center gap-8  pb-10">
       <img src={logo} alt="LineUp-pro-logo" />
@@ -86,7 +96,7 @@ function Onboarding5({ onContinue }) {
           <p className="text-s">Terms of use and Privacy Policy </p>
         </div>
       </div>
-      <p className="text-m underline" onClick={() => onContinue?.()}>
+      <p className="text-m underline" onClick={handleContinue}>
         Skip for now
       </p>
     </div>
