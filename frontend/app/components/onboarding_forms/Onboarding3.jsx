@@ -78,7 +78,7 @@ function Onboarding3({ onContinue }) {
           type="text"
           onChange={setCity}
         />
-        <div className="w-fit mt-[50px]">
+        <div className="w-fit mt-5">
           <YellowBtn type="submit" loading={loading} loadingText="Loading...">
             Continue
           </YellowBtn>
