@@ -1,6 +1,6 @@
 import React from "react";
 
-//The app is locked for only for users that are signed in so make an account before you start coding
+//The app is locked for only users that are signed in, so make an account before you start coding
 
 //I made all the routes that we will be using (at least necessary for navbar)
 //I made the navbar appear only after onboarding and login and have position fixed on top of the content.
