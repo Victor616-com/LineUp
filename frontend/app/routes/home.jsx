@@ -27,14 +27,19 @@ export default function Home() {
 
   return (
     <PrivateRoute>
-      <main className="font-extrabold text-m px-s">
+      <main className="font-extrabold text-m px-s flex flex-col gap-s">
         <h1>Home</h1>
         <h2>Welcome, {profile?.name} 🎉</h2>
 
         {session?.user && (
-          <Link to={`/profile/${session.user.id}`} className="text-blue-500">
-            My Profile
-          </Link>
+          <div className="flex flex-col gap-s">
+            <Link to={`/profile/${session.user.id}`} className="text-blue-500">
+              My Profile
+            </Link>
+            <Link to={`/create`} className="text-blue-500 ml-s">
+              Create Note
+            </Link>
+          </div>
         )}
       </main>
     </PrivateRoute>
