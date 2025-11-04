@@ -2,9 +2,9 @@ import { index, route } from "@react-router/dev/routes";
 
 export default [
   route("/", "routes/layout.jsx", [
-    index("routes/SignIn.jsx"),
+    index("routes/Onboarding.jsx"),
     route("home", "routes/home.jsx"),
-    route("onboarding", "routes/Onboarding.jsx"),
+    route("signin", "routes/SignIn.jsx"),
     route("signup", "routes/SignUp.jsx"),
     route("profile/:id", "routes/ProfileView.jsx"),
     route("profile/:id/edit", "routes/EditProfileView.jsx"),

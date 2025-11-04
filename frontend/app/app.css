@@ -144,46 +144,45 @@ html {
 
 /* Animations */
 /* Logo fade + scale animation */
+/* Logo fade + scale animation (now slower + smoother) */
 @keyframes logoPop {
   0% {
     opacity: 0;
     transform: scale(0.85);
   }
-  60% {
+  30% {
     opacity: 1;
-    transform: scale(1.05);
+    transform: scale(1.08);
+  }
+  55% {
+    opacity: 1;
+    transform: scale(1);
   }
   80% {
     opacity: 1;
     transform: scale(1);
   }
   100% {
-    opacity: 0;
+    opacity: 1; /* stay fully visible for the 2s hold */
     transform: scale(1);
-    display: none;
   }
 }
 
-/* Background color transition */
+/* Background color transition (slower + softer) */
 @keyframes bgFade {
   0% {
-    background-color: #ffd74a; /* Your yellow */
+    background-color: #ffcf70;
   }
   100% {
-    background-color: transparent;
+    background-color: #ffffff;
   }
 }
 
 /* Apply animations */
 .onboarding-screen {
-  animation: bgFade 0.2s ease forwards;
-  animation-delay: 3s;
+  animation: bgFade 5s ease-in-out forwards;
 }
 
 .logo-anim {
-  animation: logoPop 3s ease forwards;
-}
-
-.react-tel-input .form-control {
-  font-size: 40px;
+  animation: logoPop 5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
 }

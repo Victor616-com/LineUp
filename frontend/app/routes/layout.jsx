@@ -5,7 +5,7 @@ import NavBar from "../components/Navbar";
 export default function Layout() {
   const location = useLocation();
 
-  const hideOnRoutes = ["/", "/signup", "/onboarding"];
+  const hideOnRoutes = ["/", "/signup", "/signin"];
   const shouldHideUI = hideOnRoutes.includes(location.pathname);
 
   return (
