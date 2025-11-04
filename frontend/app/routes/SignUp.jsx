@@ -7,6 +7,7 @@ import YellowBtn from "../components/YellowBtn";
 import ProgressBar from "../components/ProgressBar";
 import Onboarding2 from "../components/onboarding_forms/Onboarding2";
 import Onboarding3 from "../components/onboarding_forms/Onboarding3";
+import Onboarding4 from "../components/onboarding_forms/Onboarding4";
 
 const SignUp = () => {
   // User info states
@@ -98,13 +99,18 @@ const SignUp = () => {
           <p>
             Already have an account?
             <Link className="text-blue-500" to="/">
+              {" "}
               Sign in
             </Link>
           </p>
         </form>
       )}
       {step === 2 && <Onboarding2 onContinue={() => setStep(3)} />}
-      {step === 3 && <Onboarding3 />}
+      {step === 3 && <Onboarding3 onContinue={() => setStep(4)} />}
+      {step === 4 && (
+        <Onboarding4 //onContinue={() => setStep(4)}
+        />
+      )}
     </div>
   );
 };

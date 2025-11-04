@@ -126,6 +126,18 @@ html {
     line-height: normal;
     letter-spacing: 0.5px;
   }
+  .text-heading3 {
+    /* Font family */
+    font-family: "Helvetica Now Display", sans-serif;
+    /* Font size & weight */
+    font-size: 18px;
+    font-weight: 700;
+    font-style: normal;
+    color: var(--color-textColor);
+    /* Line height & letter spacing */
+    line-height: normal;
+    letter-spacing: 0.5px;
+  }
 }
 
 /* Animations */
@@ -168,4 +180,8 @@ html {
 
 .logo-anim {
   animation: logoPop 3s ease forwards;
+}
+
+.react-tel-input .form-control {
+  font-size: 40px;
 }
