@@ -1,17 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-
+import { UserAuth } from "../context/AuthContext"; // adjust path
 import logo from "../../assets/images/logo-purple.svg";
 
 function Onboarding() {
-  const [showContent, setShowContent] = useState(false); //change this to true if you work on the onboarding part
+  const [showContent, setShowContent] = useState(false); // change to true if testing onboarding part
   const navigate = useNavigate();
+  const { session } = UserAuth(); // get current user session
 
   useEffect(() => {
-    // Play splash animation for all users
+    // Play splash animation for first-time or returning users
     const timer = setTimeout(() => {
       const hasSeenOnboarding = localStorage.getItem("hasSeenOnboarding");
-
+      // If user is already signed in → go to home
+      if (session?.user) {
+        navigate("/home");
+        return;
+      }
       if (hasSeenOnboarding) {
         // Returning user → go to signin
         navigate("/signin");
@@ -19,19 +24,16 @@ function Onboarding() {
         // First-time user → show welcome screen
         setShowContent(true);
       }
-    }, 5000); // animation duration + optional hold
+    }, 5000); // animation duration
 
     return () => clearTimeout(timer);
-  }, [navigate]);
+  }, [navigate, session]);
 
   const handleGetStarted = () => {
-    // Save onboarding completion so splash won't repeat
     localStorage.setItem("hasSeenOnboarding", "true");
     navigate("/signup");
   };
 
-  //This has to be changed to show the app features
-  //If you work on this first change the setShowContent to true so you can see it
   if (showContent) {
     return (
       <div className="w-full h-dvh flex flex-col gap-l justify-center items-center bg-white">
