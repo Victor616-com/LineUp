@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 import logo from "../../assets/images/logo-purple.svg";
 
 function Onboarding() {
-  const [showContent, setShowContent] = useState(false);
+  const [showContent, setShowContent] = useState(false); //change this to true if you work on the onboarding part
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,6 +31,7 @@ function Onboarding() {
   };
 
   //This has to be changed to show the app features
+  //If you work on this first change the setShowContent to true so you can see it
   if (showContent) {
     return (
       <div className="w-full h-dvh flex flex-col gap-l justify-center items-center bg-white">
