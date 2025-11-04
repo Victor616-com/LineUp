@@ -1,15 +1,19 @@
-import { Outlet } from "react-router";
-
+import { Outlet, useLocation } from "react-router";
 import TopBar from "../components/TopBar";
+import NavBar from "../components/Navbar";
 
 export default function Layout() {
-  const hideTopBarOn = ["/", "/signup", "/onboarding"];
-  const shouldHideTopBar = hideTopBarOn.includes(location.pathname);
+  const location = useLocation();
+
+  const hideOnRoutes = ["/", "/signup", "/onboarding"];
+  const shouldHideUI = hideOnRoutes.includes(location.pathname);
 
   return (
     <main className="main-content">
-      {!shouldHideTopBar && <TopBar />}
-      <div className={shouldHideTopBar ? "" : "mt-[60px]"}>
+      {!shouldHideUI && <TopBar />}
+      {!shouldHideUI && <NavBar />}
+
+      <div className={shouldHideUI ? "" : "mt-[60px]"}>
         <Outlet />
       </div>
     </main>
