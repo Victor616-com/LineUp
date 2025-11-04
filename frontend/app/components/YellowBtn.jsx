@@ -16,7 +16,7 @@ function YellowBtn({
       className={`bg-yellow w-fit px-[20px] py-xxs rounded-medium cursor-pointer ${className}`}
       type={type}
     >
-      {loading ? { loadingText } : children}
+      {loading ? loadingText : children}
     </button>
   );
 }

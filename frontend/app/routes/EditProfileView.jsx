@@ -1,13 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, Link } from "react-router";
-import profileImg from "../../assets/images/profile-placeholder.png";
-import ProfileAbout from "../components/ProfileAbout";
-import menu from "../../assets/images/menu-dots.svg";
 import { supabase } from "../supabaseClient";
-import ProfileTag from "../components/ProfileTag";
-import SearchInput from "../components/SearchInput";
 import TagSelector from "../components/TagSelector";
 
+import profileImg from "../../assets/images/profile-placeholder.png";
 const EditProfileView = () => {
   const { id } = useParams(); // The profile user ID from URL
   const [profile, setProfile] = useState(null);

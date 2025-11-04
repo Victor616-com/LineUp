@@ -1,0 +1,7 @@
+import React from "react";
+
+function Onboarding3() {
+  return <div>Onboarding3</div>;
+}
+
+export default Onboarding3;
