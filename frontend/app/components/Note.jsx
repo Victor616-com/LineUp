@@ -1,5 +1,6 @@
 import React from "react";
 import profilePic from "../../assets/images/profile-placeholder.png";
+import { useNavigate } from "react-router";
 
 const menu = (
   <svg
@@ -16,11 +17,20 @@ const menu = (
 );
 
 function Note({ note }) {
+  const navigate = useNavigate();
+
+  // Mavigate to the user's profile page
+  const goToProfile = () => {
+    navigate(`/profile/${note.user_id}`);
+  };
   return (
     <div className="flex flex-col gap-s border-b border-gray-200 py-5">
       <div className="flex flex-row justify-between items-center px-xs">
         <div className="flex flex-row gap-xs">
-          <div className="flex flex-row gap-xxs items-center">
+          <div
+            className="flex flex-row gap-xs items-center"
+            onClick={goToProfile}
+          >
             <img
               className="w-6 h-6 rounded-full object-cover ring-1 ring-white"
               src={
