@@ -1,8 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  useEffect,
+  useState,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
 import { supabase } from "../supabaseClient";
 import { UserAuth } from "../context/AuthContext";
 
-function NoteBottomBar({ noteId }) {
+const NoteBottomBar = forwardRef(({ noteId, onLike }, ref) => {
   const { session } = UserAuth();
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
@@ -99,9 +104,12 @@ function NoteBottomBar({ noteId }) {
 
       setLiked(true);
       setLikeCount((c) => c + 1);
+      if (onLike) onLike();
     }
   };
-
+  useImperativeHandle(ref, () => ({
+    toggleLike,
+  }));
   return (
     <div className="flex flex-row px-xs gap-5">
       {/* Likes */}
@@ -119,6 +127,6 @@ function NoteBottomBar({ noteId }) {
       <div className="flex flex-row items-center gap-xxs">{shareIcon}</div>
     </div>
   );
-}
+});
 
 export default NoteBottomBar;
