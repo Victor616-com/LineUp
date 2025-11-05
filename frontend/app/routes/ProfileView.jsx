@@ -4,6 +4,7 @@ import profileImg from "../../assets/images/profile-placeholder.png";
 import ProfileAbout from "../components/ProfileAbout";
 import menu from "../../assets/images/menu-dots.svg";
 import { supabase } from "../supabaseClient";
+import ProfileNotes from "../components/ProfileNotes";
 
 const ProfileView = () => {
   const { id } = useParams(); // ✅ The profile user ID from URL
@@ -145,11 +146,11 @@ const ProfileView = () => {
       </div>
 
       {/* Tab Content */}
-      <div className="px-m py-s bg-white">
+      <div className=" py-s bg-white">
         {activeTab === "about" ? (
           <ProfileAbout profile={profile} />
         ) : (
-          <p className="text-m">This is the Notes section content.</p>
+          <ProfileNotes userId={id} />
         )}
       </div>
     </div>

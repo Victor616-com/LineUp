@@ -16,7 +16,7 @@ import videoPlaceholder1 from "../../assets/images/video-placeholder-1.png";
 import videoPlaceholder2 from "../../assets/images/video-placeholder-2.png";
 const ProfileAbout = ({ profile }) => {
   return (
-    <div className="flex flex-col gap-m">
+    <div className="flex flex-col gap-m px-m">
       <div className="flex flex-col gap-s">
         <p className="text-m text-lightGray">About me</p>
         <p className="px-[10px] text-m color-black">
