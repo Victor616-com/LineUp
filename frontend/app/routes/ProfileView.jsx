@@ -56,49 +56,27 @@ const ProfileView = () => {
   const handleConnect = async () => {
     if (!session?.user) return alert("You must be logged in to connect.");
 
-    const fromUser = session.user.id;
-    const toUser = id;
+    const fromUser = session.user.id; // current user
+    const toUser = id; // the profile being viewed
 
     if (fromUser === toUser) return alert("You cannot connect to yourself.");
 
-    // Check if a connection exists in either direction
-    const { data: existing, error: fetchError } = await supabase
+    // Check if a connection already exists
+    const { data: existing } = await supabase
       .from("connections")
-      .select("id, status, from_user, to_user")
-      .or(
-        `and(from_user.eq.${fromUser},to_user.eq.${toUser}),and(from_user.eq.${toUser},to_user.eq.${fromUser})`,
-      )
+      .select("id, status")
+      .eq("from_user", fromUser)
+      .eq("to_user", toUser)
       .single();
 
-    if (fetchError) {
-      console.error(fetchError);
-      return;
-    }
-
-    // If connection exists
     if (existing) {
       if (existing.status === "pending") return alert("Request already sent.");
-
-      if (existing.status === "accepted") {
-        // ✅ Delete the connection
-        const { error: deleteError } = await supabase
-          .from("connections")
-          .delete()
-          .eq("id", existing.id);
-
-        if (deleteError) {
-          console.error(deleteError);
-          alert("Failed to remove connection.");
-        } else {
-          setConnectionStatus(null); // reset button state
-          setConnectionCount((prev) => Math.max(prev - 1, 0));
-        }
-        return;
-      }
+      if (existing.status === "accepted")
+        return alert("You are already connected.");
     }
 
-    // If no connection exists, insert a new request
-    const { error: insertError } = await supabase.from("connections").insert([
+    // Insert connection request
+    const { error } = await supabase.from("connections").insert([
       {
         from_user: fromUser,
         to_user: toUser,
@@ -106,12 +84,8 @@ const ProfileView = () => {
       },
     ]);
 
-    if (insertError) {
-      console.error(insertError);
-      alert("Failed to send connection request.");
-    } else {
-      setConnectionStatus("pending");
-    }
+    if (error) console.error(error);
+    else setConnectionStatus("pending");
   };
 
   //Connection status
@@ -122,9 +96,7 @@ const ProfileView = () => {
       const { data } = await supabase
         .from("connections")
         .select("status")
-        .or(
-          `and(from_user.eq.${currentUserId},to_user.eq.${id}),and(from_user.eq.${id},to_user.eq.${currentUserId})`,
-        )
+        .or(`from_user.eq.${currentUserId},to_user.eq.${id}`)
         .single();
 
       setConnectionStatus(data?.status || null);
