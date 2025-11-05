@@ -45,16 +45,19 @@ function TagSelector({ onSave }) {
   }, [availableTags, tags, search]);
 
   const handleAddTag = (tag) => {
-    if (tags.length >= 2) return; // Limit to 2 tags
-    setTags((prev) => [...prev, tag]);
-    if (!availableTags.includes(tag)) {
+    if (tags.length >= 2) return;
+    const newTags = [...tags, tag];
+    setTags(newTags);
+    if (onSave) onSave(newTags); // <-- send updated tags to parent immediately
+    if (!availableTags.includes(tag))
       setAvailableTags((prev) => [...prev, tag]);
-    }
     setSearch("");
   };
 
   const handleRemoveTag = (tag) => {
-    setTags((prev) => prev.filter((t) => t !== tag));
+    const newTags = tags.filter((t) => t !== tag);
+    setTags(newTags);
+    if (onSave) onSave(newTags); // <-- send updated tags to parent
   };
 
   const saveTags = () => {
@@ -128,7 +131,7 @@ function TagSelector({ onSave }) {
         </div>
       ) : (
         <div
-          className="flex flex-row justify-between items-center cursor-pointer"
+          className="flex flex-row justify-between items-center cursor-pointer px-xxs"
           onClick={() => setOpen(true)}
         >
           {tags.length > 0 && (

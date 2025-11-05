@@ -7,6 +7,7 @@ import { supabase } from "../supabaseClient";
 import { UserAuth } from "../context/AuthContext";
 
 function CreatePage() {
+  const [tags, setTags] = useState([]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [media, setMedia] = useState(null);
@@ -37,19 +38,15 @@ function CreatePage() {
       return;
     }
 
-    const user_id = session.user.id;
-
     let media_url = null;
-
     if (media) {
       const fileName = `${Date.now()}-${media.name}`;
       const { data, error } = await supabase.storage
         .from("notes_media")
-        .upload(fileName, media); // use the File object directly
+        .upload(fileName, media);
 
-      if (error) {
-        console.error("Upload error:", error);
-      } else {
+      if (error) console.error("Upload error:", error);
+      else {
         media_url = supabase.storage.from("notes_media").getPublicUrl(fileName)
           .data.publicUrl;
       }
@@ -60,7 +57,8 @@ function CreatePage() {
         title,
         description,
         media_url,
-        user_id,
+        tags: tags.length > 0 ? tags : null, // make sure it's null or array
+        user_id: session.user.id,
       },
     ]);
 
@@ -70,6 +68,7 @@ function CreatePage() {
       setTitle("");
       setDescription("");
       setMedia(null);
+      setTags([]);
     }
   };
 
@@ -88,7 +87,7 @@ function CreatePage() {
         <p className="text-m">{profile?.name || "Profile Name"}</p>
       </div>
 
-      <TagSelector />
+      <TagSelector onSave={(updatedTags) => setTags(updatedTags)} />
 
       <NoteInputField
         value={title}

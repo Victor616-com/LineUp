@@ -1,35 +1,56 @@
-"use client";
-import { Link, useNavigate } from "react-router";
-import { UserAuth } from "../context/AuthContext";
-import PrivateRoute from "../components/PrivateRoute";
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
+import Note from "../components/Note";
+import { UserAuth } from "../context/AuthContext";
+import PrivateRoute from "../components/PrivateRoute";
+import { Link } from "react-router";
 
 export default function Home() {
-  const { session, signOut } = UserAuth();
-  const [profile, setProfile] = useState(null);
-
-  const navigate = useNavigate();
+  const { session } = UserAuth();
+  const [notes, setNotes] = useState([]);
 
   useEffect(() => {
-    const loadProfile = async () => {
-      if (!session) return;
-      const { data } = await supabase
-        .from("profiles")
-        .select("name")
-        .eq("id", session.user.id)
-        .single();
-      setProfile(data);
-      console.log("Loaded profile:", data);
+    const fetchNotes = async () => {
+      const { data, error } = await supabase
+        .from("notes")
+        .select(
+          `
+          id,
+          title,
+          description,
+          media_url,
+          user_id,
+          tags,
+          profiles!inner(name, avatar_url)
+        `,
+        )
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("Error fetching notes:", error);
+      } else {
+        // Flatten the profile info
+        const formatted = data.map((note) => ({
+          id: note.id,
+          title: note.title,
+          description: note.description,
+          media_url: note.media_url,
+          user_id: note.user_id,
+          name: note.profiles?.name,
+          avatar_url: note.profiles?.avatar_url,
+          tags: note.tags,
+        }));
+        setNotes(formatted);
+      }
     };
-    loadProfile();
-  }, [session]);
+
+    fetchNotes();
+  }, []);
 
   return (
     <PrivateRoute>
       <main className="font-extrabold text-m px-s flex flex-col gap-s">
         <h1>Home</h1>
-        <h2>Welcome, {profile?.name} 🎉</h2>
 
         {session?.user && (
           <div className="flex flex-col gap-s">
@@ -41,6 +62,14 @@ export default function Home() {
             </Link>
           </div>
         )}
+
+        <div className="flex flex-col gap-m">
+          {notes.length ? (
+            notes.map((note) => <Note key={note.id} note={note} />)
+          ) : (
+            <p>No notes yet.</p>
+          )}
+        </div>
       </main>
     </PrivateRoute>
   );
