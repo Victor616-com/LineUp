@@ -1,6 +1,7 @@
 import React from "react";
 import profilePic from "../../assets/images/profile-placeholder.png";
 import { useNavigate } from "react-router";
+import NoteBottomBar from "./NoteBottomBar";
 
 const menu = (
   <svg
@@ -68,6 +69,7 @@ function Note({ note }) {
       )}
 
       <p className="text-m wrap-break-word w-full px-xs">{note.description}</p>
+      <NoteBottomBar noteId={note.id} />
     </div>
   );
 }
