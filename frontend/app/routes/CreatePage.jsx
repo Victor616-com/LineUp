@@ -5,15 +5,18 @@ import NoteInputField from "../components/NoteInputField";
 import AddMediaBtn from "../components/AddMediaBtn";
 import { supabase } from "../supabaseClient";
 import { UserAuth } from "../context/AuthContext";
+import YellowBtn from "../components/YellowBtn";
+import { useNavigate } from "react-router";
 
 function CreatePage() {
+  const [loading, setLoading] = useState(false);
   const [tags, setTags] = useState([]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [media, setMedia] = useState(null);
   const [profile, setProfile] = useState(null);
   const { session } = UserAuth(); // current session
-
+  const navigate = useNavigate();
   // Fetch user profile from profiles table
   useEffect(() => {
     const fetchProfile = async () => {
@@ -37,7 +40,7 @@ function CreatePage() {
       alert("You must be logged in to post!");
       return;
     }
-
+    setLoading(true);
     let media_url = null;
     if (media) {
       const fileName = `${Date.now()}-${media.name}`;
@@ -64,11 +67,12 @@ function CreatePage() {
 
     if (error) console.error("Insert error:", error);
     else {
-      alert("Note created!");
       setTitle("");
       setDescription("");
       setMedia(null);
       setTags([]);
+      setLoading(false);
+      navigate("/home");
     }
   };
 
@@ -103,13 +107,15 @@ function CreatePage() {
         onChange={setDescription}
         placeholder="Write your post..."
       />
-
-      <button
-        onClick={handlePost}
-        className="mt-4 bg-yellow-400 text-black px-4 py-2 rounded-lg"
-      >
-        Post
-      </button>
+      <div className="w-full flex justify-end">
+        <YellowBtn
+          loading={loading}
+          loadingText="posting..."
+          onClick={handlePost}
+        >
+          Post
+        </YellowBtn>
+      </div>
     </div>
   );
 }
