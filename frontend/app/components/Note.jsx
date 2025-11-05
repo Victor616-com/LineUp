@@ -1,6 +1,7 @@
 import React from "react";
 import profilePic from "../../assets/images/profile-placeholder.png";
 import { useNavigate } from "react-router";
+import NoteBottomBar from "./NoteBottomBar";
 
 const menu = (
   <svg
@@ -18,21 +19,26 @@ const menu = (
 
 function Note({ note }) {
   const navigate = useNavigate();
-
+  const noteBottomBarRef = React.useRef();
   // Mavigate to the user's profile page
   const goToProfile = () => {
     navigate(`/profile/${note.user_id}`);
   };
+  const handleDoubleTap = () => {
+    if (noteBottomBarRef.current) {
+      noteBottomBarRef.current.toggleLike();
+    }
+  };
   return (
-    <div className="flex flex-col gap-s border-b border-gray-200 py-5">
+    <div className="flex flex-col gap-s  py-xs">
       <div className="flex flex-row justify-between items-center px-xs">
         <div className="flex flex-row gap-xs">
           <div
-            className="flex flex-row gap-xs items-center"
+            className="flex flex-row gap-xxs items-center"
             onClick={goToProfile}
           >
             <img
-              className="w-6 h-6 rounded-full object-cover ring-1 ring-white"
+              className="w-8 h-8 rounded-full object-cover ring-1 ring-white"
               src={
                 note.avatar_url
                   ? `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/profile_images/${note.avatar_url}`
@@ -64,10 +70,12 @@ function Note({ note }) {
           src={note.media_url}
           alt="note media"
           className="w-full h-auto rounded-small"
+          onDoubleClick={handleDoubleTap}
         />
       )}
 
       <p className="text-m wrap-break-word w-full px-xs">{note.description}</p>
+      <NoteBottomBar ref={noteBottomBarRef} noteId={note.id} onLike />
     </div>
   );
 }
