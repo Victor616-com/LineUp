@@ -5,14 +5,18 @@ import ProfileAbout from "../components/ProfileAbout";
 import menu from "../../assets/images/menu-dots.svg";
 import { supabase } from "../supabaseClient";
 import ProfileNotes from "../components/ProfileNotes";
-
+import { UserAuth } from "../context/AuthContext";
 const ProfileView = () => {
+  const { session } = UserAuth();
   const { id } = useParams(); // ✅ The profile user ID from URL
   const [profile, setProfile] = useState(null);
   const [activeTab, setActiveTab] = useState("about");
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef(null);
   const [currentUserId, setCurrentUserId] = useState(null);
+  const [connectionStatus, setConnectionStatus] = useState(null);
+  const [connectionCount, setConnectionCount] = useState(0);
+  const [notesCount, setNoteCount] = useState(0);
   // ✅ Fetch profile from Supabase
   useEffect(() => {
     const fetchProfile = async () => {
@@ -47,6 +51,83 @@ const ProfileView = () => {
     };
     getUser();
   }, []);
+
+  // Connections
+  const handleConnect = async () => {
+    if (!session?.user) return alert("You must be logged in to connect.");
+
+    const fromUser = session.user.id; // current user
+    const toUser = id; // the profile being viewed
+
+    if (fromUser === toUser) return alert("You cannot connect to yourself.");
+
+    // Check if a connection already exists
+    const { data: existing } = await supabase
+      .from("connections")
+      .select("id, status")
+      .eq("from_user", fromUser)
+      .eq("to_user", toUser)
+      .single();
+
+    if (existing) {
+      if (existing.status === "pending") return alert("Request already sent.");
+      if (existing.status === "accepted")
+        return alert("You are already connected.");
+    }
+
+    // Insert connection request
+    const { error } = await supabase.from("connections").insert([
+      {
+        from_user: fromUser,
+        to_user: toUser,
+        status: "pending",
+      },
+    ]);
+
+    if (error) console.error(error);
+    else setConnectionStatus("pending");
+  };
+
+  //Connection status
+  useEffect(() => {
+    const fetchConnectionStatus = async () => {
+      if (!currentUserId || currentUserId === id) return;
+
+      const { data } = await supabase
+        .from("connections")
+        .select("status")
+        .or(`from_user.eq.${currentUserId},to_user.eq.${id}`)
+        .single();
+
+      setConnectionStatus(data?.status || null);
+    };
+
+    fetchConnectionStatus();
+  }, [currentUserId, id]);
+
+  //gets the number of connections a user has and the number of notes he made
+  useEffect(() => {
+    const fetchCounts = async () => {
+      // Count accepted connections
+      const { count: connectionsCount, error: connectionError } = await supabase
+        .from("connections")
+        .select("id", { count: "exact", head: true })
+        .or(`from_user.eq.${id},to_user.eq.${id}`)
+        .eq("status", "accepted");
+
+      if (!connectionError) setConnectionCount(connectionsCount || 0);
+
+      // Count notes made by this user
+      const { count: notesCount, error: notesError } = await supabase
+        .from("notes")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", id);
+
+      if (!notesError) setNoteCount(notesCount || 0);
+    };
+
+    fetchCounts();
+  }, [id]);
 
   if (!profile)
     return <p className="text-center text-white mt-10">Loading...</p>;
@@ -89,7 +170,7 @@ const ProfileView = () => {
         <div className="flex flex-row items-center justify-between w-full">
           {/* Connections */}
           <div className="flex-1 flex flex-col items-center text-center text-white">
-            <p className="text-m text-white">320</p>
+            <p className="text-m text-white">{connectionCount}</p>
             <p className="text-xs text-lightGray">Connections</p>
           </div>
           {/* Profile Image */}
@@ -104,7 +185,7 @@ const ProfileView = () => {
           />
           {/* Notes */}
           <div className="flex-1 flex flex-col items-center text-center text-white">
-            <p className="text-m text-white">512</p>
+            <p className="text-m text-white">{notesCount}</p>
             <p className="text-xs text-lightGray">Notes</p>
           </div>
         </div>
@@ -115,8 +196,18 @@ const ProfileView = () => {
         </div>
 
         <div className="flex justify-space-between gap-m">
-          <button className="bg-yellow px-m py-xxs rounded-medium cursor-pointer">
-            Connect
+          <button
+            onClick={handleConnect}
+            className="bg-yellow px-m py-xxs rounded-medium cursor-pointer"
+            disabled={
+              connectionStatus === "pending" || connectionStatus === "accepted"
+            }
+          >
+            {connectionStatus === "accepted"
+              ? "Connected"
+              : connectionStatus === "pending"
+                ? "Pending"
+                : "Connect"}
           </button>
           <button className="bg-yellow px-m py-xxs rounded-medium cursor-pointer">
             Send Message

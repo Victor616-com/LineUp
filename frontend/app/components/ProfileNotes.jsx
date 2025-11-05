@@ -27,7 +27,6 @@ function ProfileNotes({ userId }) {
       if (error) {
         console.error(error);
       } else {
-        // ✅ Flatten data the same way you did in Home
         const formatted = data.map((note) => ({
           ...note,
           name: note.profiles?.name,
