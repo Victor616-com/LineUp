@@ -14,6 +14,7 @@ function CreatePage() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [media, setMedia] = useState(null);
+  const [mediaUrl, setMediaUrl] = useState(null);
   const [profile, setProfile] = useState(null);
   const { session } = UserAuth(); // current session
   const navigate = useNavigate();
@@ -40,27 +41,15 @@ function CreatePage() {
       alert("You must be logged in to post!");
       return;
     }
-    setLoading(true);
-    let media_url = null;
-    if (media) {
-      const fileName = `${Date.now()}-${media.name}`;
-      const { data, error } = await supabase.storage
-        .from("notes_media")
-        .upload(fileName, media);
 
-      if (error) console.error("Upload error:", error);
-      else {
-        media_url = supabase.storage.from("notes_media").getPublicUrl(fileName)
-          .data.publicUrl;
-      }
-    }
+    setLoading(true);
 
     const { error } = await supabase.from("notes").insert([
       {
         title,
         description,
-        media_url,
-        tags: tags.length > 0 ? tags : null, // make sure it's null or array
+        media_url: mediaUrl, // ✅ No upload needed here
+        tags: tags.length > 0 ? tags : null,
         user_id: session.user.id,
       },
     ]);
@@ -70,6 +59,7 @@ function CreatePage() {
       setTitle("");
       setDescription("");
       setMedia(null);
+      setMediaUrl(null);
       setTags([]);
       setLoading(false);
       navigate("/home");
@@ -99,7 +89,28 @@ function CreatePage() {
         placeholder="Write a title"
       />
 
-      <AddMediaBtn media={setMedia} />
+      <AddMediaBtn
+        media={async (file) => {
+          setMedia(file); // still store local preview if needed
+
+          // Upload right away
+          const fileName = `${Date.now()}-${file.name}`;
+          const { data, error } = await supabase.storage
+            .from("notes_media")
+            .upload(fileName, file);
+
+          if (error) {
+            console.error("Upload error:", error);
+            return;
+          }
+
+          const publicUrl = supabase.storage
+            .from("notes_media")
+            .getPublicUrl(fileName).data.publicUrl;
+
+          setMediaUrl(publicUrl); // ✅ Save URL for use later
+        }}
+      />
 
       <NoteInputField
         as="textarea"
