@@ -20,6 +20,12 @@ function Onboarding3({ onContinue }) {
     setLoading(true);
     setError("");
 
+    if (!name || name.trim().length === 0) {
+      setError("Please enter your full name.");
+      setLoading(false);
+      return;
+    }
+
     try {
       // Save selection to Supabase
       const { error } = await supabase
@@ -56,6 +62,7 @@ function Onboarding3({ onContinue }) {
           value={name}
           type="name"
           onChange={setName}
+          capitalizeWords
         />
         <InputField
           label="Phone number"

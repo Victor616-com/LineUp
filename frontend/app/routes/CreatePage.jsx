@@ -13,7 +13,7 @@ function CreatePage() {
   const [tags, setTags] = useState([]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [media, setMedia] = useState(null);
+  const [error, setError] = useState(null);
   const [mediaUrl, setMediaUrl] = useState(null);
   const [profile, setProfile] = useState(null);
   const { session } = UserAuth(); // current session
@@ -39,11 +39,18 @@ function CreatePage() {
   const handlePost = async () => {
     if (!session) {
       alert("You must be logged in to post!");
+
       return;
     }
 
     setLoading(true);
 
+    if (!title || title.trim().length === 0) {
+      setError("Please enter a title");
+      setLoading(false);
+      return;
+    }
+    setError("");
     const { error } = await supabase.from("notes").insert([
       {
         title,
@@ -67,7 +74,7 @@ function CreatePage() {
   };
 
   return (
-    <div className="px-s flex flex-col gap-[25px] w-full">
+    <div className="px-s flex flex-col gap-[25px] w-full pb-20">
       <div className="flex flex-row gap-xs items-center w-full">
         <img
           className="w-10 h-10 rounded-full object-cover ring-1 ring-white"
@@ -81,11 +88,16 @@ function CreatePage() {
         <p className="text-m">{profile?.name || "Profile Name"}</p>
       </div>
 
+      {error && <p className="text-red-500 text-sm">{error}</p>}
+
       <TagSelector onSave={(updatedTags) => setTags(updatedTags)} />
 
       <NoteInputField
         value={title}
-        onChange={setTitle}
+        onChange={(v) => {
+          setTitle(v);
+          setError(""); // ✅ clear error on input change
+        }}
         placeholder="Write a title"
       />
 

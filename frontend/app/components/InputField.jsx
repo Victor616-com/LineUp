@@ -17,6 +17,7 @@ const InputField = ({
   placeholder = "",
   className = "",
   type = "text",
+  capitalizeWords,
 }) => {
   const isPhone = type === "tel";
   const [selectedCode, setSelectedCode] = useState(COUNTRY_CODES[0]);
@@ -64,7 +65,21 @@ const InputField = ({
           type={type}
           value={value}
           placeholder={placeholder}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => {
+            let val = e.target.value;
+
+            // ✅ Apply capitalization only if prop is passed
+            if (capitalizeWords) {
+              val = val
+                .toLowerCase()
+                .split(" ")
+                .filter(Boolean)
+                .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+                .join(" ");
+            }
+
+            onChange(val);
+          }}
           className={`border border-[#b7b7b7] w-full rounded-lg px-xs py-xs outline-none text-m text-center ${className}`}
         />
       )}
