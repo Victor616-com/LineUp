@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router";
 
 // --- helpers ---
 function formatTime(iso) {
@@ -43,7 +44,7 @@ function ThreadItem({ thread, currentUserId, usersMap = {}, onOpen }) {
   const isUnread = unread > 0 && last?.senderId !== currentUserId;
 
   return (
-    <button onClick={() => onOpen?.(thread)} className="w-full text-left group">
+    <Link to={`/chats/${thread.id}`} className="block">
       <div className="w-full flex items-start gap-3 p-4 rounded-2xl border bg-white shadow-sm hover:shadow transition">
         {/* Avatar */}
         <div className="flex-none w-10 h-10">
@@ -85,7 +86,7 @@ function ThreadItem({ thread, currentUserId, usersMap = {}, onOpen }) {
           </div>
         )}
       </div>
-    </button>
+    </Link>
   );
 }
 
