@@ -208,15 +208,53 @@ export default function ChatView() {
   }, [hasMore, oldestLoadedAt]);
 
   // ---------- 5) Send a message ----------
+  const UUID_RE =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+  async function ensureIAmParticipant(tid, uid) {
+    const { data, error } = await supabase
+      .from("thread_participants")
+      .select("thread_id")
+      .eq("thread_id", tid)
+      .eq("user_id", uid)
+      .limit(1);
+    if (error) {
+      console.error("participant check error:", error);
+      return false;
+    }
+    return (data?.length || 0) > 0;
+  }
+
   async function sendMessage(e) {
     e?.preventDefault();
-    if (!text.trim() || !me) return;
-    const { error } = await supabase.from("messages").insert({
-      thread_id: threadId,
-      sender_id: me,
-      text: text.trim(),
-    });
-    if (!error) setText("");
+    const body = text.trim();
+    if (!body) return;
+
+    if (!me) return alert("Not authenticated");
+    if (!UUID_RE.test(threadId)) {
+      console.error({ threadId });
+      return alert("Invalid chat id");
+    }
+
+    const ok = await ensureIAmParticipant(threadId, me);
+    if (!ok) return alert("You’re not a participant in this chat.");
+
+    const { data, error, status } = await supabase
+      .from("messages")
+      .insert(
+        { thread_id: threadId, sender_id: me, text: body },
+        { count: "exact" },
+      )
+      .select("id, thread_id, created_at") // forces PostgREST to return detailed errors
+      .single();
+
+    if (error) {
+      console.error("Message send error:", { status, error });
+      alert(error.message || `Failed to send (HTTP ${status})`);
+      return;
+    }
+
+    setText("");
   }
 
   // ---------- 6) Fetch any missing sender profiles & fill cache ----------
