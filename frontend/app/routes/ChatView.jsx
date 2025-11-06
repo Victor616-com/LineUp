@@ -2,10 +2,9 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router";
 import { supabase } from "../supabaseClient";
 
-// --- config ---
 const PAGE_SIZE = 30;
 
-// --- helpers ---
+// ---------- Small helpers ----------
 function fmtTime(iso) {
   const d = new Date(iso);
   return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
@@ -34,8 +33,12 @@ function initials(name = "") {
   if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
   return (parts[0][0] + parts[1][0]).toUpperCase();
 }
+function toPublicAvatar(urlPath) {
+  if (!urlPath) return null;
+  return `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/profile_images/${urlPath}`;
+}
 
-// --- message bubble ---
+// ---------- UI: Single bubble ----------
 function Bubble({ mine, msg, name, avatarUrl }) {
   return (
     <div className={`flex ${mine ? "justify-end" : "justify-start"}`}>
@@ -57,7 +60,6 @@ function Bubble({ mine, msg, name, avatarUrl }) {
       <div
         className={`max-w-[75%] rounded-2xl px-3 py-2 text-sm ${mine ? "bg-black text-white" : "bg-white border"}`}
       >
-        {/* group header (sender name) only for others; shown by group container, not here */}
         <div>{msg.text}</div>
         <div
           className={`text-[10px] mt-1 ${mine ? "opacity-80" : "text-gray-500"}`}
@@ -69,19 +71,32 @@ function Bubble({ mine, msg, name, avatarUrl }) {
   );
 }
 
-// --- page ---
+// ---------- Page ----------
 export default function ChatView() {
   const { threadId } = useParams();
+
+  // auth
   const [me, setMe] = useState(null);
-  const [messages, setMessages] = useState([]); // ascending by created_at
+
+  // messages (kept in ASC by created_at)
+  const [messages, setMessages] = useState([]);
+
+  // paging state
   const [oldestLoadedAt, setOldestLoadedAt] = useState(null);
   const [hasMore, setHasMore] = useState(true);
+
+  // compose state
   const [text, setText] = useState("");
+
+  // DOM refs
   const listRef = useRef(null);
   const bottomRef = useRef(null);
   const isLoadingMoreRef = useRef(false);
 
-  // auth
+  // cache: sender_id -> { name, avatar_url }
+  const [profilesById, setProfilesById] = useState(new Map());
+
+  // ---------- 1) Get current user ----------
   useEffect(() => {
     (async () => {
       const { data } = await supabase.auth.getUser();
@@ -89,7 +104,7 @@ export default function ChatView() {
     })();
   }, []);
 
-  // fetch a page of messages (older → newest page)
+  // ---------- 2) Fetch one page (newest-first -> reverse to oldest-first) ----------
   async function fetchPage({ before = null } = {}) {
     let q = supabase
       .from("messages")
@@ -108,29 +123,32 @@ export default function ChatView() {
 
     const rows = (data || []).map((r) => ({
       ...r,
-      name: undefined, // we'll fill later
-      avatar_url: null, // we'll fill later
+      // placeholders; will be filled by the profiles cache
+      name: undefined,
+      avatar_url: null,
     }));
 
-    rows.reverse(); // newest->oldest to ascending
+    rows.reverse(); // ASC for rendering/grouping
     return rows;
   }
 
-  // initial load
+  // ---------- 3) Initial load + realtime subscription ----------
   useEffect(() => {
     if (!threadId) return;
+
     (async () => {
       const page = await fetchPage();
       setMessages(page);
-      setOldestLoadedAt(page[0]?.created_at || null);
+      setOldestLoadedAt(page.length ? page[0].created_at : null);
       setHasMore(page.length === PAGE_SIZE);
-      // jump to bottom
+      // jump to bottom after initial load
       setTimeout(
         () => bottomRef.current?.scrollIntoView({ behavior: "auto" }),
         0,
       );
     })();
-    // realtime subscribe
+
+    // Realtime: append new messages (only if user can select via RLS)
     const channel = supabase
       .channel(`chat-${threadId}`)
       .on(
@@ -147,6 +165,7 @@ export default function ChatView() {
             if (prev.some((x) => x.id === m.id)) return prev;
             return [...prev, { ...m, name: undefined, avatar_url: null }];
           });
+          // auto-scroll on arrival
           setTimeout(
             () => bottomRef.current?.scrollIntoView({ behavior: "smooth" }),
             0,
@@ -154,10 +173,14 @@ export default function ChatView() {
         },
       )
       .subscribe();
-    return () => channel.unsubscribe();
+
+    return () => {
+      channel.unsubscribe();
+      // supabase.removeChannel?.(channel); // uncomment if using v2 API that supports this
+    };
   }, [threadId]);
 
-  // infinite scroll up
+  // ---------- 4) Infinite scroll up to load older messages ----------
   useEffect(() => {
     const el = listRef.current;
     if (!el) return;
@@ -169,9 +192,9 @@ export default function ChatView() {
         const prevHeight = el.scrollHeight;
         const page = await fetchPage({ before: oldestLoadedAt });
         setMessages((cur) => [...page, ...cur]);
-        setOldestLoadedAt(page[0]?.created_at || oldestLoadedAt);
+        setOldestLoadedAt(page.length ? page[0].created_at : oldestLoadedAt);
         setHasMore(page.length === PAGE_SIZE);
-        // maintain scroll position after prepending
+        // keep viewport anchored after prepend
         setTimeout(() => {
           const newHeight = el.scrollHeight;
           el.scrollTop = newHeight - prevHeight;
@@ -184,6 +207,7 @@ export default function ChatView() {
     return () => el.removeEventListener("scroll", onScroll);
   }, [hasMore, oldestLoadedAt]);
 
+  // ---------- 5) Send a message ----------
   async function sendMessage(e) {
     e?.preventDefault();
     if (!text.trim() || !me) return;
@@ -195,13 +219,55 @@ export default function ChatView() {
     if (!error) setText("");
   }
 
-  // group by day, then by consecutive sender
+  // ---------- 6) Fetch any missing sender profiles & fill cache ----------
+  useEffect(() => {
+    // gather sender IDs that we don't have in cache yet
+    const missing = new Set();
+    for (const m of messages) {
+      if (!profilesById.has(m.sender_id)) missing.add(m.sender_id);
+    }
+    if (missing.size === 0) return;
+
+    (async () => {
+      const ids = Array.from(missing);
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("id, name, avatar_url")
+        .in("id", ids);
+
+      if (error) {
+        console.error("profiles fetch error:", error);
+        return;
+      }
+
+      // merge into cache
+      setProfilesById((prev) => {
+        const next = new Map(prev);
+        for (const p of data || []) {
+          next.set(p.id, {
+            name: p.name || "",
+            avatar_url: toPublicAvatar(p.avatar_url),
+          });
+        }
+        return next;
+      });
+    })();
+  }, [messages, profilesById]);
+
+  // ---------- 7) Group messages by day, then by consecutive sender ----------
   const grouped = useMemo(() => {
     const days = [];
     let dayBucket = null;
     let lastSender = null;
 
-    for (const msg of messages) {
+    for (const raw of messages) {
+      const prof = profilesById.get(raw.sender_id);
+      const msg = {
+        ...raw,
+        name: prof?.name ?? raw.name ?? "",
+        avatar_url: prof?.avatar_url ?? raw.avatar_url ?? null,
+      };
+
       if (!dayBucket || !sameDay(dayBucket.day, msg.created_at)) {
         dayBucket = { day: msg.created_at, groups: [] };
         days.push(dayBucket);
@@ -220,17 +286,18 @@ export default function ChatView() {
       }
     }
     return days;
-  }, [messages]);
+  }, [messages, profilesById]);
 
   if (!me)
     return <div className="p-4 text-sm text-gray-500">Authenticating…</div>;
 
+  // ---------- Render ----------
   return (
     <div className="flex flex-col h-screen">
-      {/* header */}
+      {/* Header */}
       <div className="p-3 border-b font-semibold">Chat</div>
 
-      {/* history */}
+      {/* History */}
       <div ref={listRef} className="flex-1 overflow-y-auto p-3 bg-gray-50">
         {hasMore && (
           <div className="text-center text-xs text-gray-500 mb-2">
@@ -240,7 +307,7 @@ export default function ChatView() {
 
         {grouped.map((day) => (
           <div key={day.day} className="mb-4">
-            {/* day separator */}
+            {/* Day separator */}
             <div className="flex items-center my-2">
               <div className="flex-1 h-px bg-gray-200" />
               <div className="mx-3 text-[11px] text-gray-500">
@@ -278,7 +345,7 @@ export default function ChatView() {
         <div ref={bottomRef} />
       </div>
 
-      {/* composer */}
+      {/* Composer */}
       <form onSubmit={sendMessage} className="p-3 border-t flex gap-2 bg-white">
         <input
           value={text}
