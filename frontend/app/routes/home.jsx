@@ -51,18 +51,6 @@ export default function Home() {
     <PrivateRoute>
       <main className="font-extrabold text-m px-s flex flex-col gap-s">
         <h1>Home</h1>
-
-        {session?.user && (
-          <div className="flex flex-col gap-s">
-            <Link to={`/profile/${session.user.id}`} className="text-blue-500">
-              My Profile
-            </Link>
-            <Link to={`/create`} className="text-blue-500 ml-s">
-              Create Note
-            </Link>
-          </div>
-        )}
-
         <div className="flex flex-col gap-m">
           {notes.length ? (
             notes.map((note) => <Note key={note.id} note={note} />)
