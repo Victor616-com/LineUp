@@ -6,6 +6,8 @@ import menu from "../../assets/images/menu-dots.svg";
 import { supabase } from "../supabaseClient";
 import ProfileNotes from "../components/ProfileNotes";
 import { UserAuth } from "../context/AuthContext";
+import StartChatButton from "../components/chats_components/StartChatButton";
+
 const ProfileView = () => {
   const { session } = UserAuth();
   const { id } = useParams(); // ✅ The profile user ID from URL
@@ -209,9 +211,7 @@ const ProfileView = () => {
                 ? "Pending"
                 : "Connect"}
           </button>
-          <button className="bg-yellow px-m py-xxs rounded-medium cursor-pointer">
-            Send Message
-          </button>
+          <StartChatButton targetUserId={id} />
         </div>
       </div>
 

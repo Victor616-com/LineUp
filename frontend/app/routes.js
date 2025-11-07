@@ -11,6 +11,7 @@ export default [
     route("collabs", "routes/CollabsPage.jsx"),
     route("services", "routes/ServicesPage.jsx"),
     route("chats", "routes/ChatsPage.jsx"),
+    route("chats/:threadId", "routes/ChatView.jsx"),
     route("create", "routes/CreatePage.jsx"),
   ]),
 ];
