@@ -257,6 +257,27 @@ export default function ChatView() {
     setText("");
   }
 
+  // ---------- 5b) Mark messages as read ----------
+  async function markMessagesAsRead(msgs) {
+    if (!me || !msgs?.length) return;
+
+    const rows = msgs
+      .filter((m) => m.sender_id !== me)
+      .map((m) => ({ message_id: m.id, user_id: me, status: "read" }));
+
+    if (!rows.length) return;
+
+    const { error } = await supabase
+      .from("message_status")
+      .upsert(rows, { onConflict: "message_id,user_id" });
+    if (error) console.error("markMessagesAsRead error:", error);
+  }
+
+  // call it whenever the visible list changes
+  useEffect(() => {
+    if (messages.length) markMessagesAsRead(messages);
+  }, [messages]);
+
   // ---------- 6) Fetch any missing sender profiles & fill cache ----------
   useEffect(() => {
     // gather sender IDs that we don't have in cache yet
