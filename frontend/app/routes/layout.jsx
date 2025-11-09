@@ -1,6 +1,6 @@
 import { Outlet, useLocation } from "react-router";
 import TopBar from "../components/TopBar";
-import NavBar from "../components/Navbar";
+import NavBar from "../components/NavBar";
 
 export default function Layout() {
   const location = useLocation();
