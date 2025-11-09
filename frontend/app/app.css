@@ -53,6 +53,18 @@ html {
 }
 
 @layer components {
+  .text-xxs {
+    /* Font family */
+    font-family: "Helvetica Now Display", sans-serif;
+    /* Font size & weight */
+    font-size: 11px; /* 1rem = 16px */
+    font-weight: 400;
+    font-style: normal;
+    color: var(--color-textColor);
+    /* Line height & letter spacing */
+    line-height: normal;
+    letter-spacing: 0.5px;
+  }
   .text-xs {
     /* Font family */
     font-family: "Helvetica Now Display", sans-serif;
