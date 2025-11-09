@@ -147,7 +147,7 @@ export default function NavBar() {
     ? `/profile/${session.user.id}`
     : "/signin";
   return (
-    <nav className="fixed bottom-[5px] left-0 right-0 px-xs pb-[env(safe-area-inset-bottom)]">
+    <nav className="fixed bottom-[2px] left-0 right-0 px-xs pb-[env(safe-area-inset-bottom)]">
       <div className=" rounded-full bg-[rgba(0,0,0,0.90)] px-xs py-xs">
         <ul className="grid grid-cols-5  items-center">
           <li className="flex justify-center">

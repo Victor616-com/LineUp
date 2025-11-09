@@ -49,7 +49,7 @@ export default function Home() {
 
   return (
     <PrivateRoute>
-      <main className="font-extrabold text-m px-s flex flex-col gap-s">
+      <main className="font-extrabold text-m px-s flex flex-col gap-s mb-[110px]">
         <h1>Home</h1>
         <div className="flex flex-col gap-m">
           {notes.length ? (

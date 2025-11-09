@@ -4,16 +4,26 @@ import NavBar from "../components/Navbar";
 
 export default function Layout() {
   const location = useLocation();
+  const path = location.pathname;
 
-  const hideOnRoutes = ["/", "/signup", "/signin"];
-  const shouldHideUI = hideOnRoutes.includes(location.pathname);
+  const hideTopBar =
+    path === "/" ||
+    path === "/signup" ||
+    path === "/signin" ||
+    path === "/chats"; // hides on both /chats and /chats/:id
+
+  const hideNavBar =
+    path === "/" ||
+    path === "/signup" ||
+    path === "/signin" ||
+    path.startsWith("/chats/"); // hides ONLY on /chats/:id
 
   return (
     <main className="main-content">
-      {!shouldHideUI && <TopBar />}
-      {!shouldHideUI && <NavBar />}
+      {!hideTopBar && <TopBar />}
+      {!hideNavBar && <NavBar />}
 
-      <div className={shouldHideUI ? "" : "mt-[60px]"}>
+      <div className={!hideTopBar ? "mt-[60px]" : ""}>
         <Outlet />
       </div>
     </main>
