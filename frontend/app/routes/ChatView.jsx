@@ -58,7 +58,7 @@ function Bubble({ mine, msg, name, avatarUrl }) {
         </div>
       )}
       <div
-        className={`max-w-[75%] rounded-2xl px-3 py-2 text-sm ${mine ? "bg-black text-white" : "bg-white border"}`}
+        className={`max-w-[75%] rounded-2xl px-3 py-2 text-sm ${mine ? "bg-black text-white" : "bg-white border border-veryLightGray"}`}
       >
         <div>{msg.text}</div>
         <div
@@ -352,12 +352,9 @@ export default function ChatView() {
 
   // ---------- Render ----------
   return (
-    <div className="flex flex-col h-screen">
-      {/* Header */}
-      <div className="p-3 border-b font-semibold">Chat</div>
-
+    <div className="flex flex-col h-dvh pt-[0px]">
       {/* History */}
-      <div ref={listRef} className="flex-1 overflow-y-auto p-3 bg-gray-50">
+      <div ref={listRef} className="flex-1 overflow-y-auto p-3 bg-gray-50 ">
         {hasMore && (
           <div className="text-center text-xs text-gray-500 mb-2">
             Pull up to load earlier…
@@ -405,12 +402,15 @@ export default function ChatView() {
       </div>
 
       {/* Composer */}
-      <form onSubmit={sendMessage} className="p-3 border-t flex gap-2 bg-white">
+      <form
+        onSubmit={sendMessage}
+        className="p-3 border-t border-veryLightGray flex gap-2 bg-white fixed bottom-0 w-full"
+      >
         <input
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="Type a message…"
-          className="flex-1 border rounded-xl px-3 py-2"
+          className="flex-1 border border-veryLightGray rounded-xl px-3 py-2"
         />
         <button className="px-4 py-2 rounded-xl bg-black text-white">
           Send

@@ -63,7 +63,7 @@ function ThreadItem({ thread, currentUserId, usersMap = {} }) {
 
   return (
     <Link to={`/chats/${thread.id}`} className="block">
-      <div className="w-full flex items-start gap-3 p-4 rounded-2xl border bg-white shadow-sm hover:shadow transition">
+      <div className="w-full flex items-start gap-3 p-4 rounded-2xl border border-veryLightGray bg-white shadow-sm hover:shadow transition">
         {/* Avatar */}
         <div className="flex-none w-10 h-10">
           {avatar ? (
