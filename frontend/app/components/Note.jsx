@@ -201,7 +201,10 @@ function Note({ note }) {
           {menu}
         </div>
         {isMenuOpen && userId === note.user_id && (
-          <div ref={menuRef} className="absolute right-4 mt-30  z-50">
+          <div
+            ref={menuRef}
+            className="absolute right-4 mt-30 bg-[#767676] border border-[#bababa] rounded-small px-s py-xxs z-50"
+          >
             <button
               onClick={handleDelete}
               className="text-white w-full text-s flex flex-row items-center gap-xs border-b border-[#c8c8c8] py-xxs"
