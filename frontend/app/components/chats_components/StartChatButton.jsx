@@ -41,7 +41,11 @@ export default function StartChatButton({
   }
 
   return (
-    <button onClick={handleClick} disabled={busy} className={className}>
+    <button
+      onClick={handleClick}
+      disabled={busy}
+      className={`bg-[#686972] border border-[#aaaaaa] w-fit px-[28px] flex flex-row gap-xxs items-center py-xs rounded-medium cursor-pointer text-m text-white`}
+    >
       {busy ? "Opening…" : label}
     </button>
   );

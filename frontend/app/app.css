@@ -1,10 +1,18 @@
 @font-face {
+  font-family: "Neulis Cursive Medium";
+  src: url("../assets/fonts/Neulis_Cursive_Medium.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
   font-family: "Helvetica Now Display";
   src: url("../assets/fonts/HelveticaNowDisplay-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
+
 html {
   margin: 0;
   padding: 0;
@@ -53,6 +61,17 @@ html {
 }
 
 @layer components {
+  .text-fancy {
+    /* Font family */
+    font-family: "Neulis Cursive Medium" !important;
+    /* Font size & weight */
+    font-size: 32px; /* 1rem = 16px */
+    font-weight: 400;
+    font-style: normal;
+    color: var(--color-textColor);
+    /* Line height & letter spacing */
+    line-height: normal;
+  }
   .text-xxs {
     /* Font family */
     font-family: "Helvetica Now Display", sans-serif;

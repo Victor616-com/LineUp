@@ -7,7 +7,190 @@ import { supabase } from "../supabaseClient";
 import ProfileNotes from "../components/ProfileNotes";
 import { UserAuth } from "../context/AuthContext";
 import StartChatButton from "../components/chats_components/StartChatButton";
+import TransparentBtn from "../components/TransparentBtn";
+const savedIcon = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 20 20"
+    fill="none"
+  >
+    <path
+      d="M4.16602 17.5V4.16667C4.16602 3.24619 4.91221 2.5 5.83268 2.5H14.166C15.0865 2.5 15.8327 3.24619 15.8327 4.16667V17.5L10.9006 14.3294C10.3516 13.9764 9.6471 13.9764 9.09809 14.3294L4.16602 17.5Z"
+      stroke="white"
+      stroke-width="1.25"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+);
 
+const archivedIcon = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 20 20"
+    fill="none"
+  >
+    <path
+      d="M9.99935 10.0003C13.221 10.0003 15.8327 7.38865 15.8327 4.16699H4.16602C4.16602 7.38865 6.77769 10.0003 9.99935 10.0003ZM9.99935 10.0003C13.221 10.0003 15.8327 12.612 15.8327 15.8337H4.16602C4.16602 12.612 6.77769 10.0003 9.99935 10.0003Z"
+      stroke="white"
+      stroke-width="1.25"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M4.16602 1.66699H9.99935H15.8327"
+      stroke="white"
+      stroke-width="1.25"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M4.16602 18.333H9.99935H15.8327"
+      stroke="white"
+      stroke-width="1.25"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+);
+const shareIcon = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 20 20"
+    fill="none"
+  >
+    <path
+      d="M16.6673 10.8335V15.8335C16.6673 16.754 15.9211 17.5002 15.0007 17.5002H5.00065C4.08018 17.5002 3.33398 16.754 3.33398 15.8335V10.8335"
+      stroke="white"
+      stroke-width="1.25"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M9.99935 12.5V2.5M9.99935 2.5L7.08268 5.41667M9.99935 2.5L12.916 5.41667"
+      stroke="white"
+      stroke-width="1.25"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+);
+const disconnectIcon = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 20 20"
+    fill="none"
+  >
+    <path
+      d="M13.1161 10.3485L15.2322 8.23242M17.3483 6.11633L15.2322 8.23242M15.2322 8.23242L13.1161 6.11633M15.2322 8.23242L17.3483 10.3485"
+      stroke="white"
+      stroke-width="1.4963"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M0.833984 16.6667V15.8333C0.833984 12.6117 3.44566 10 6.66732 10C9.88898 10 12.5007 12.6117 12.5007 15.8333V16.6667"
+      stroke="white"
+      stroke-width="1.25"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M6.66732 10.0002C8.50827 10.0002 10.0007 8.50778 10.0007 6.66683C10.0007 4.82588 8.50827 3.3335 6.66732 3.3335C4.82637 3.3335 3.33398 4.82588 3.33398 6.66683C3.33398 8.50778 4.82637 10.0002 6.66732 10.0002Z"
+      stroke="white"
+      stroke-width="1.25"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+);
+const blockIcon = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 20 20"
+    fill="none"
+  >
+    <path
+      d="M7.64413 12.357L10.0012 10M12.3582 7.64298L10.0012 10M10.0012 10L7.64413 7.64298M10.0012 10L12.3582 12.357"
+      stroke="white"
+      stroke-width="1.25"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M9.99935 18.3332C14.6017 18.3332 18.3327 14.6022 18.3327 9.99984C18.3327 5.39746 14.6017 1.6665 9.99935 1.6665C5.39698 1.6665 1.66602 5.39746 1.66602 9.99984C1.66602 14.6022 5.39698 18.3332 9.99935 18.3332Z"
+      stroke="white"
+      stroke-width="1.25"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+);
+const reportIcon = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 20 20"
+    fill="none"
+  >
+    <path
+      d="M10 6.6665L10 9.99984"
+      stroke="white"
+      stroke-width="1.25"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M10 13.3418L10.0083 13.3326"
+      stroke="white"
+      stroke-width="1.25"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M9.99935 18.3332C14.6017 18.3332 18.3327 14.6022 18.3327 9.99984C18.3327 5.39746 14.6017 1.6665 9.99935 1.6665C5.39698 1.6665 1.66602 5.39746 1.66602 9.99984C1.66602 11.5177 2.07183 12.9408 2.78087 14.1665L2.08268 17.9165L5.83268 17.2183C7.0584 17.9274 8.48149 18.3332 9.99935 18.3332Z"
+      stroke="white"
+      stroke-width="1.25"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+);
+const plusIcon = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    fill="none"
+  >
+    <path
+      d="M5.33398 7.99967H8.00065M10.6673 7.99967H8.00065M8.00065 7.99967V5.33301M8.00065 7.99967V10.6663"
+      stroke="white"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M8.00065 14.6663C11.6825 14.6663 14.6673 11.6816 14.6673 7.99967C14.6673 4.31778 11.6825 1.33301 8.00065 1.33301C4.31875 1.33301 1.33398 4.31778 1.33398 7.99967C1.33398 11.6816 4.31875 14.6663 8.00065 14.6663Z"
+      stroke="white"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+);
 const ProfileView = () => {
   const { session } = UserAuth();
   const { id } = useParams(); // ✅ The profile user ID from URL
@@ -19,6 +202,7 @@ const ProfileView = () => {
   const [connectionStatus, setConnectionStatus] = useState(null);
   const [connectionCount, setConnectionCount] = useState(0);
   const [notesCount, setNoteCount] = useState(0);
+
   // ✅ Fetch profile from Supabase
   useEffect(() => {
     const fetchProfile = async () => {
@@ -95,13 +279,30 @@ const ProfileView = () => {
     const fetchConnectionStatus = async () => {
       if (!currentUserId || currentUserId === id) return;
 
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("connections")
         .select("status")
-        .or(`from_user.eq.${currentUserId},to_user.eq.${id}`)
-        .single();
+        .or(
+          `and(from_user.eq.${currentUserId},to_user.eq.${id}),and(from_user.eq.${id},to_user.eq.${currentUserId})`,
+        );
 
-      setConnectionStatus(data?.status || null);
+      if (error) {
+        console.error("Error fetching connection status:", error);
+        return;
+      }
+
+      // There may be 0, 1 or 2 matching rows → pick the most relevant
+      if (data && data.length > 0) {
+        // If any row is accepted → they are connected
+        if (data.some((row) => row.status === "accepted")) {
+          setConnectionStatus("accepted");
+        } else {
+          // Otherwise it's pending
+          setConnectionStatus("pending");
+        }
+      } else {
+        setConnectionStatus(null);
+      }
     };
 
     fetchConnectionStatus();
@@ -131,11 +332,31 @@ const ProfileView = () => {
     fetchCounts();
   }, [id]);
 
+  const handleDisconnect = async () => {
+    if (!currentUserId || !id) return;
+
+    // Delete connection between the two users, in either direction
+    const { error } = await supabase
+      .from("connections")
+      .delete()
+      .or(
+        `and(from_user.eq.${currentUserId},to_user.eq.${id}),and(from_user.eq.${id},to_user.eq.${currentUserId})`,
+      );
+
+    if (error) {
+      console.error("Error disconnecting:", error);
+      return;
+    }
+
+    // Update UI
+    setConnectionStatus(null);
+  };
+
   if (!profile)
     return <p className="text-center text-white mt-10">Loading...</p>;
 
   return (
-    <div className="">
+    <div className="pb-[110px]">
       <div className="relative flex flex-col items-center justify-center gap-s mt-[10px] bg-profileColor1 py-m rounded-medium mx-[10px]">
         {/* Menu Button */}
         <img
@@ -146,27 +367,55 @@ const ProfileView = () => {
         />
 
         {/* Dropdown Menu */}
-        {showMenu && (
-          <div
-            ref={menuRef}
-            className="absolute right-5 top-[50px] z-50 bg-[#767676] border border-[#bababa] rounded-small px-s py-xs"
-          >
-            {/* Show Edit Profile only if this is YOUR profile */}
-            {currentUserId === id && (
-              <Link to={`/profile/${id}/edit`}>
-                <button className="text-white w-full text-s flex flex-row justify-center items-center gap-xs border-b border-[#c8c8c8] py-xs">
-                  Edit Profile
+        {showMenu &&
+          (currentUserId === id ? (
+            <>
+              <div
+                ref={menuRef}
+                className="absolute right-5 top-[50px] z-50 bg-[#767676] border border-[#bababa] rounded-small px-s py-xs"
+              >
+                <button className="text-white w-full text-s flex flex-row justify-start items-center gap-xs border-b border-[#c8c8c8] py-xs">
+                  {savedIcon}
+                  Saved
                 </button>
-              </Link>
-            )}
-            <button className="text-white w-full text-s flex flex-row justify-center items-center gap-xs border-b border-[#c8c8c8] py-xs">
-              Share Profile
-            </button>
-            <button className="text-white  text-s flex flex-row justify-center items-center gap-xs py-xs w-full">
-              Archived
-            </button>
-          </div>
-        )}
+                <button className="text-white  text-s flex flex-row justify-start items-center gap-xs py-xs w-full">
+                  {archivedIcon}
+                  Archived
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <div
+                ref={menuRef}
+                className="absolute right-5 top-[50px] z-50 bg-[#767676] border border-[#bababa] rounded-small px-s py-xs"
+              >
+                <button className="text-white w-full text-s flex flex-row justify-start items-center gap-xs border-b border-[#c8c8c8] py-xs">
+                  {shareIcon}
+                  Share profile
+                </button>
+                {connectionStatus === "accepted" && (
+                  <button
+                    onClick={handleDisconnect}
+                    className="text-white w-full text-s flex flex-row justify-start items-center gap-xs border-b border-[#c8c8c8] py-xs"
+                  >
+                    {disconnectIcon}
+                    Disconnect
+                  </button>
+                )}
+
+                <button className="text-white w-full text-s flex flex-row justify-start items-center gap-xs border-b border-[#c8c8c8] py-xs">
+                  {blockIcon}
+                  Block user
+                </button>
+
+                <button className="text-white  text-s flex flex-row justify-start items-center gap-xs py-xs w-full">
+                  {reportIcon}
+                  Report user
+                </button>
+              </div>
+            </>
+          ))}
 
         {/* Profile Header Content */}
         <div className="flex flex-row items-center justify-between w-full">
@@ -197,21 +446,35 @@ const ProfileView = () => {
           <p className="text-s text-lightGray">{profile.bio}</p>
         </div>
 
-        <div className="flex justify-space-between gap-m">
-          <button
-            onClick={handleConnect}
-            className="bg-yellow px-m py-xxs rounded-medium cursor-pointer"
-            disabled={
-              connectionStatus === "pending" || connectionStatus === "accepted"
-            }
-          >
-            {connectionStatus === "accepted"
-              ? "Connected"
-              : connectionStatus === "pending"
-                ? "Pending"
-                : "Connect"}
-          </button>
-          <StartChatButton targetUserId={id} />
+        <div className="flex justify-space-between gap-s">
+          {currentUserId === id ? (
+            <>
+              <Link to={`/profile/${id}/edit`}>
+                <TransparentBtn>Edit Profile</TransparentBtn>
+              </Link>
+
+              <TransparentBtn>Share Profile</TransparentBtn>
+            </>
+          ) : (
+            <>
+              <TransparentBtn
+                onClick={handleConnect}
+                disabled={
+                  connectionStatus === "pending" ||
+                  connectionStatus === "accepted"
+                }
+              >
+                {connectionStatus === "accepted"
+                  ? "Connected"
+                  : connectionStatus === "pending"
+                    ? "Pending"
+                    : "Connect"}
+                {connectionStatus !== "accepted" && plusIcon}
+              </TransparentBtn>
+
+              <StartChatButton targetUserId={id} />
+            </>
+          )}
         </div>
       </div>
 
