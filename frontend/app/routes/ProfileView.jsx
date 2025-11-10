@@ -7,6 +7,7 @@ import { supabase } from "../supabaseClient";
 import ProfileNotes from "../components/ProfileNotes";
 import { UserAuth } from "../context/AuthContext";
 import StartChatButton from "../components/chats_components/StartChatButton";
+import TransparentBtn from "../components/TransparentBtn";
 const savedIcon = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -161,6 +162,30 @@ const reportIcon = (
       d="M9.99935 18.3332C14.6017 18.3332 18.3327 14.6022 18.3327 9.99984C18.3327 5.39746 14.6017 1.6665 9.99935 1.6665C5.39698 1.6665 1.66602 5.39746 1.66602 9.99984C1.66602 11.5177 2.07183 12.9408 2.78087 14.1665L2.08268 17.9165L5.83268 17.2183C7.0584 17.9274 8.48149 18.3332 9.99935 18.3332Z"
       stroke="white"
       stroke-width="1.25"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+);
+const plusIcon = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    fill="none"
+  >
+    <path
+      d="M5.33398 7.99967H8.00065M10.6673 7.99967H8.00065M8.00065 7.99967V5.33301M8.00065 7.99967V10.6663"
+      stroke="white"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M8.00065 14.6663C11.6825 14.6663 14.6673 11.6816 14.6673 7.99967C14.6673 4.31778 11.6825 1.33301 8.00065 1.33301C4.31875 1.33301 1.33398 4.31778 1.33398 7.99967C1.33398 11.6816 4.31875 14.6663 8.00065 14.6663Z"
+      stroke="white"
+      stroke-width="1.5"
       stroke-linecap="round"
       stroke-linejoin="round"
     />
@@ -421,24 +446,19 @@ const ProfileView = () => {
           <p className="text-s text-lightGray">{profile.bio}</p>
         </div>
 
-        <div className="flex justify-space-between gap-m">
+        <div className="flex justify-space-between gap-s">
           {currentUserId === id ? (
             <>
               <Link to={`/profile/${id}/edit`}>
-                <button className="bg-yellow px-m py-xxs rounded-medium cursor-pointer">
-                  Edit Profile
-                </button>
+                <TransparentBtn>Edit Profile</TransparentBtn>
               </Link>
 
-              <button className="bg-yellow px-m py-xxs rounded-medium cursor-pointer">
-                Share Profile
-              </button>
+              <TransparentBtn>Share Profile</TransparentBtn>
             </>
           ) : (
             <>
-              <button
+              <TransparentBtn
                 onClick={handleConnect}
-                className="bg-yellow px-m py-xxs rounded-medium cursor-pointer"
                 disabled={
                   connectionStatus === "pending" ||
                   connectionStatus === "accepted"
@@ -449,7 +469,8 @@ const ProfileView = () => {
                   : connectionStatus === "pending"
                     ? "Pending"
                     : "Connect"}
-              </button>
+                {connectionStatus !== "accepted" && plusIcon}
+              </TransparentBtn>
 
               <StartChatButton targetUserId={id} />
             </>
