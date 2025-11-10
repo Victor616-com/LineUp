@@ -149,20 +149,20 @@ const ProfileView = () => {
         {showMenu && (
           <div
             ref={menuRef}
-            className="absolute right-[30px] top-[50px] z-50 bg-white"
+            className="absolute right-5 top-[50px] z-50 bg-[#767676] border border-[#bababa] rounded-small px-s py-xs"
           >
             {/* Show Edit Profile only if this is YOUR profile */}
             {currentUserId === id && (
               <Link to={`/profile/${id}/edit`}>
-                <button className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100">
+                <button className="text-white w-full text-s flex flex-row justify-center items-center gap-xs border-b border-[#c8c8c8] py-xs">
                   Edit Profile
                 </button>
               </Link>
             )}
-            <button className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100">
+            <button className="text-white w-full text-s flex flex-row justify-center items-center gap-xs border-b border-[#c8c8c8] py-xs">
               Share Profile
             </button>
-            <button className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100">
+            <button className="text-white  text-s flex flex-row justify-center items-center gap-xs py-xs w-full">
               Archived
             </button>
           </div>
